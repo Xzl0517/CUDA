@@ -19,7 +19,7 @@ __global__ void Relu(float *x){
 
 __global__ void Sigmoid(float *x){
     int id = blockIdx.x * blockDim.x + threadIdx.x;
-    x[id] = 1.0 / (1.0 + exp(x[id]));
+    x[id] = 1.0 / (1.0 + exp(-x[id]));
 }
 
 __global__ void Tanh(float *x){
@@ -63,7 +63,8 @@ int main(){
     //Sigmoid<<<N,N>>>(A_cuda);
     //Tanh<<<N,N>>>(A_cuda);
     Gelu<<<N,N>>>(A_cuda);
-
+    
+    cudaDeviceSynchronize();
     cudaMemcpy(B,A_cuda,sizeof(float)*N*N,cudaMemcpyDeviceToHost);
 
     printf("act......\n");
